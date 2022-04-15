@@ -1,0 +1,14 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 4
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: true
+AllowShortBlocksOnASingleLine: true
+DerivePointerAlignment: false
+PointerAlignment: Left
+AlignConsecutiveDeclarations: Consecutive
+AllowShortLambdasOnASingleLine: All
+SpaceBeforeInheritanceColon: false
+SpaceBeforeRangeBasedForLoopColon: false
+SpaceBeforeParens: Never

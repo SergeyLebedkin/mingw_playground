@@ -11,4 +11,4 @@ AlignConsecutiveDeclarations: Consecutive
 AllowShortLambdasOnASingleLine: All
 SpaceBeforeInheritanceColon: false
 SpaceBeforeRangeBasedForLoopColon: false
-SpaceBeforeParens: Never
+Cpp11BracedListStyle: false

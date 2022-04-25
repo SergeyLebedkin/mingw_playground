@@ -30,7 +30,7 @@ private:
 public:
     // static functions
     static DSToothElementSPtr create(const std::string_view id = "") {
-        return std::make_shared<DSToothElement>(id, 0);
+        return std::make_shared<DSToothElement>(DSToothElement(id, 0));
     }
 };
 
@@ -49,7 +49,7 @@ private:
 public:
     // static functions
     static DSModelElementSPtr create(const std::string_view id = "") {
-        return std::make_shared<DSModelElement>(id);
+        return std::make_shared<DSModelElement>(DSModelElement(id));
     }
 };
 
@@ -70,6 +70,6 @@ private:
 public:
     // static functions
     static DSOrderSPtr create(const std::string_view Id = "") {
-        return std::make_shared<DSOrder>(Id);
+        return std::make_shared<DSOrder>(DSOrder(Id));
     }
 };

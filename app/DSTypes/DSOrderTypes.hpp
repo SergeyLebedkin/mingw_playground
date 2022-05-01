@@ -42,7 +42,7 @@ public:
     // base properties
     std::string id = "";
     // tooth elements
-    std::vector<DSToothElementSPtr> ToothElements;
+    std::vector<DSToothElementSPtr> toothElements;
 
 private:
     // contructors
@@ -82,9 +82,9 @@ public:
     std::string firstName = "";
     std::string lastName = "";
     // model elements
-    std::vector<DSModelElementSPtr> ModelElements;
+    std::vector<DSModelElementSPtr> modelElements;
     // scans
-    std::vector<DSScanSPtr> Scans;
+    std::vector<DSScanSPtr> scans;
 
 private:
     // contructors

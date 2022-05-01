@@ -1,5 +1,5 @@
 # phony
-.PHONY: all clean
+.PHONY: all asm clean
 
 # global utils
 ECHO = @echo
@@ -27,15 +27,20 @@ APP_TARGET_PATH = .
 APP_TARGET_NAME = $(APP_TARGET_PATH)/main.exe
 # app sources
 APP_SOURCES_PATH = app
-APP_SOURCES := $(wildcard $(APP_SOURCES_PATH)/*.cpp)
-APP_HEADERS := $(wildcard $(APP_SOURCES_PATH)/*.hpp)
+APP_SOURCES :=                                    \
+	$(wildcard $(APP_SOURCES_PATH)/*.cpp)         \
+	$(wildcard $(APP_SOURCES_PATH)/DSTypes/*.cpp)
+APP_HEADERS :=                                    \
+	$(wildcard $(APP_SOURCES_PATH)/*.hpp)         \
+	$(wildcard $(APP_SOURCES_PATH)/DSTypes/*.hpp)
 # app objects
 APP_SOURCES_OBJ := $(foreach file,$(APP_SOURCES),$(OBJ_PATH)/$(file).o)
 APP_SOURCES_ASM := $(foreach file,$(APP_SOURCES),$(OBJ_PATH)/$(file).asm)
 
 # create app
 all: $(APP_TARGET_NAME)
-# all: $(APP_SOURCES_ASM)
+
+asm: $(APP_SOURCES_ASM)
 
 # link application
 $(APP_TARGET_NAME): $(APP_SOURCES_OBJ)

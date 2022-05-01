@@ -11,7 +11,7 @@ class DSModelElement;
 class DSScan;
 class DSOrder;
 
-//  dental system types shared pointer predefinitions
+// dental system types shared pointer predefinitions
 typedef std::shared_ptr<DSToothElement> DSToothElementSPtr;
 typedef std::shared_ptr<DSModelElement> DSModelElementSPtr;
 typedef std::shared_ptr<DSScan>         DSScanSPtr;

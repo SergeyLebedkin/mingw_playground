@@ -27,10 +27,10 @@ APP_TARGET_PATH = .
 APP_TARGET_NAME = $(APP_TARGET_PATH)/main.exe
 # app sources
 APP_SOURCES_PATH = app
-APP_SOURCES :=                                    \
+APP_SOURCES :=	                                  \
 	$(wildcard $(APP_SOURCES_PATH)/*.cpp)         \
 	$(wildcard $(APP_SOURCES_PATH)/DSTypes/*.cpp)
-APP_HEADERS :=                                    \
+APP_HEADERS :=	                                  \
 	$(wildcard $(APP_SOURCES_PATH)/*.hpp)         \
 	$(wildcard $(APP_SOURCES_PATH)/DSTypes/*.hpp)
 # app objects

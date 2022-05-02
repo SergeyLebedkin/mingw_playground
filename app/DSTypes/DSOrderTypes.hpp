@@ -47,7 +47,7 @@ public:
     DSToothElementList(const std::initializer_list<DSToothElementSPtr> il = {})
         : list(il){};
 
-    // append tooth element
+    // append element
     void append(const DSToothElementSPtr item) {
         // check for nullptr
         if (item)
@@ -55,21 +55,21 @@ public:
                 list.push_back(item);
     }
 
-    // remove tooth element by id
+    // remove element by id
     void remove(const std::string_view id) {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::remove_if(list.begin(), list.end(), find_id);
         list.erase(it, list.end());
     }
 
-    // check if tooth element exists by id
+    // check if element exists by id
     bool exists(const std::string_view id) const {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::find_if(list.begin(), list.end(), find_id);
         return it != list.end();
     }
 
-    // find tooth element by id
+    // find element by id
     auto find(const std::string_view id) const {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::find_if(list.begin(), list.end(), find_id);
@@ -88,7 +88,7 @@ class DSModelElement {
 public:
     // base properties
     std::string id = "";
-    // tooth element list
+    // element list
     DSToothElementList toothElements;
 
 private:
@@ -113,7 +113,7 @@ public:
     DSModelElementList(const std::initializer_list<DSModelElementSPtr> il = {})
         : list(il){};
 
-    // append tooth element
+    // append element
     void append(const DSModelElementSPtr item) {
         // check for nullptr
         if (item)
@@ -121,21 +121,21 @@ public:
                 list.push_back(item);
     }
 
-    // remove tooth element by id
+    // remove element by id
     void remove(const std::string_view id) {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::remove_if(list.begin(), list.end(), find_id);
         list.erase(it, list.end());
     }
 
-    // check if tooth element exists by id
+    // check if element exists by id
     bool exists(const std::string_view id) const {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::find_if(list.begin(), list.end(), find_id);
         return it != list.end();
     }
 
-    // find tooth element by id
+    // find element by id
     auto find(const std::string_view id) const {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::find_if(list.begin(), list.end(), find_id);
@@ -177,7 +177,7 @@ public:
     // contructors
     DSScanElementList(const std::initializer_list<DSScanElementSPtr> il = {}) : list(il){};
 
-    // append tooth element
+    // append element
     void append(const DSScanElementSPtr item) {
         // check for nullptr
         if (item)
@@ -185,21 +185,21 @@ public:
                 list.push_back(item);
     }
 
-    // remove tooth element by id
+    // remove element by id
     void remove(const std::string_view id) {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::remove_if(list.begin(), list.end(), find_id);
         list.erase(it, list.end());
     }
 
-    // check if tooth element exists by id
+    // check if element exists by id
     bool exists(const std::string_view id) const {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::find_if(list.begin(), list.end(), find_id);
         return it != list.end();
     }
 
-    // find tooth element by id
+    // find element by id
     auto find(const std::string_view id) const {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::find_if(list.begin(), list.end(), find_id);
@@ -247,7 +247,7 @@ public:
     // contructors
     DSOrderList(const std::initializer_list<DSOrderSPtr> il = {}) : list(il){};
 
-    // append tooth element
+    // append element
     void append(const DSOrderSPtr item) {
         // check for nullptr
         if (item)
@@ -255,21 +255,21 @@ public:
                 list.push_back(item);
     }
 
-    // remove tooth element by id
+    // remove element by id
     void remove(const std::string_view id) {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::remove_if(list.begin(), list.end(), find_id);
         list.erase(it, list.end());
     }
 
-    // check if tooth element exists by id
+    // check if element exists by id
     bool exists(const std::string_view id) const {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::find_if(list.begin(), list.end(), find_id);
         return it != list.end();
     }
 
-    // find tooth element by id
+    // find element by id
     auto find(const std::string_view id) const {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::find_if(list.begin(), list.end(), find_id);

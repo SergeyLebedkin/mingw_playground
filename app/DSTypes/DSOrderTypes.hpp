@@ -9,13 +9,25 @@
 class DSToothElement;
 class DSModelElement;
 class DSScanElement;
-class DSOrder;
+class DSOrderElement;
+
+// dental system lists predefinitions
+class DSToothElementList;
+class DSModelElementList;
+class DSScanElementList;
+class DSOrderElementList;
 
 // dental system types shared pointer predefinitions
 typedef std::shared_ptr<DSToothElement> DSToothElementSPtr;
 typedef std::shared_ptr<DSModelElement> DSModelElementSPtr;
 typedef std::shared_ptr<DSScanElement>  DSScanElementSPtr;
-typedef std::shared_ptr<DSOrder>        DSOrderSPtr;
+typedef std::shared_ptr<DSOrderElement> DSOrderElementSPtr;
+
+// dental system types shared pointerlists  predefinitions
+typedef std::shared_ptr<DSToothElementList> DSToothElementListSPtr;
+typedef std::shared_ptr<DSModelElementList> DSModelElementListSPtr;
+typedef std::shared_ptr<DSScanElementList>  DSScanElementListSPtr;
+typedef std::shared_ptr<DSOrderElementList> DSOrderElementListSPtr;
 
 // dental system tooth element
 class DSToothElement {
@@ -42,11 +54,11 @@ private:
     // container
     std::vector<DSToothElementSPtr> list;
 
-public:
     // contructors
     DSToothElementList(const std::initializer_list<DSToothElementSPtr> il = {})
         : list(il){};
 
+public:
     // append element
     void append(const DSToothElementSPtr item) {
         // check for nullptr
@@ -76,11 +88,21 @@ public:
         return it == list.end() ? nullptr : *it;
     }
 
+    // clear elements
+    void clear() noexcept { list.clear(); }
+
     // operator [id]
     const auto operator[](const std::string_view id) const { return find(id); }
 
     // get as vector
-    const auto& as_vector() const { return list; }
+    const auto& as_vector() const noexcept { return list; }
+
+public:
+    // create
+    static DSToothElementListSPtr
+    create(const std::initializer_list<DSToothElementSPtr> il = {}) {
+        return std::make_shared<DSToothElementList>(DSToothElementList(il));
+    }
 };
 
 // dental system model element
@@ -89,11 +111,12 @@ public:
     // base properties
     std::string id = "";
     // element list
-    DSToothElementList toothElements;
+    DSToothElementListSPtr toothElementList;
 
 private:
     // contructors
-    DSModelElement(const std::string_view id) : id(id) {}
+    DSModelElement(const std::string_view id)
+        : id(id), toothElementList(DSToothElementList::create()) {}
 
 public:
     // static functions
@@ -108,11 +131,11 @@ private:
     // container
     std::vector<DSModelElementSPtr> list;
 
-public:
     // contructors
     DSModelElementList(const std::initializer_list<DSModelElementSPtr> il = {})
         : list(il){};
 
+public:
     // append element
     void append(const DSModelElementSPtr item) {
         // check for nullptr
@@ -142,11 +165,21 @@ public:
         return it == list.end() ? nullptr : *it;
     }
 
+    // clear elements
+    void clear() noexcept { list.clear(); }
+
     // operator [id]
     const auto operator[](const std::string_view id) const { return find(id); }
 
     // get as vector
-    const auto& as_vector() const { return list; }
+    const auto& as_vector() const noexcept { return list; }
+
+public:
+    // create
+    static DSModelElementListSPtr
+    create(const std::initializer_list<DSModelElementSPtr> il = {}) {
+        return std::make_shared<DSModelElementList>(DSModelElementList(il));
+    }
 };
 
 // dental system scan element
@@ -173,10 +206,11 @@ private:
     // container
     std::vector<DSScanElementSPtr> list;
 
-public:
     // contructors
-    DSScanElementList(const std::initializer_list<DSScanElementSPtr> il = {}) : list(il){};
+    DSScanElementList(const std::initializer_list<DSScanElementSPtr> il = {})
+        : list(il){};
 
+public:
     // append element
     void append(const DSScanElementSPtr item) {
         // check for nullptr
@@ -206,15 +240,25 @@ public:
         return it == list.end() ? nullptr : *it;
     }
 
+    // clear elements
+    void clear() noexcept { list.clear(); }
+
     // operator [id]
     const auto operator[](const std::string_view id) const { return find(id); }
 
     // get as vector
-    const auto& as_vector() const { return list; }
+    const auto& as_vector() const noexcept { return list; }
+
+public:
+    // create
+    static DSScanElementListSPtr
+    create(const std::initializer_list<DSScanElementSPtr> il = {}) {
+        return std::make_shared<DSScanElementList>(DSScanElementList(il));
+    }
 };
 
 // dental system order
-class DSOrder {
+class DSOrderElement {
 public:
     // base properties
     std::string id = "";
@@ -222,33 +266,36 @@ public:
     std::string firstName = "";
     std::string lastName = "";
     // model elements
-    DSModelElementList modelElements;
+    DSModelElementListSPtr modelElementList;
     // scan elements
-    DSScanElementList scanElements;
+    DSScanElementListSPtr scanElementList;
 
 private:
     // contructors
-    DSOrder(const std::string_view id = "") : id(id) {}
+    DSOrderElement(const std::string_view id = "")
+        : id(id), modelElementList(DSModelElementList::create()),
+          scanElementList(DSScanElementList::create()) {}
 
 public:
     // static functions
-    static DSOrderSPtr create(const std::string_view id = "") {
-        return std::make_shared<DSOrder>(DSOrder(id));
+    static DSOrderElementSPtr create(const std::string_view id = "") {
+        return std::make_shared<DSOrderElement>(DSOrderElement(id));
     }
 };
 
 // dental system order list
-class DSOrderList {
+class DSOrderElementList {
 private:
     // container
-    std::vector<DSOrderSPtr> list;
+    std::vector<DSOrderElementSPtr> list;
+
+    // contructors
+    DSOrderElementList(const std::initializer_list<DSOrderElementSPtr> il = {})
+        : list(il){};
 
 public:
-    // contructors
-    DSOrderList(const std::initializer_list<DSOrderSPtr> il = {}) : list(il){};
-
     // append element
-    void append(const DSOrderSPtr item) {
+    void append(const DSOrderElementSPtr item) {
         // check for nullptr
         if (item)
             if (!exists(item->id))
@@ -276,9 +323,19 @@ public:
         return it == list.end() ? nullptr : *it;
     }
 
+    // clear elements
+    void clear() noexcept { list.clear(); }
+
     // operator [id]
     const auto operator[](const std::string_view id) const { return find(id); }
 
     // get as vector
-    const auto& as_vector() const { return list; }
+    const auto& as_vector() const noexcept { return list; }
+
+public:
+    // create
+    static DSOrderElementListSPtr
+    create(const std::initializer_list<DSOrderElementSPtr> il = {}) {
+        return std::make_shared<DSOrderElementList>(DSOrderElementList(il));
+    }
 };

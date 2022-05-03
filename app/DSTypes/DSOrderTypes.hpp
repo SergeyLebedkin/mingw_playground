@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -42,9 +43,13 @@ private:
         : id(id), unn(unn) {}
 
 public:
+    virtual ~DSToothElement() {
+        std::cout << "DSToothElement dtor" << std::endl;
+    }
     // static functions
-    static DSToothElementSPtr create(const std::string_view id = "") {
-        return std::make_shared<DSToothElement>(DSToothElement(id, 0));
+    static DSToothElementSPtr create(const std::string_view id = "",
+                                     const uint32_t         unn = 0) {
+        return std::make_shared<DSToothElement>(DSToothElement(id, unn));
     }
 };
 
@@ -55,8 +60,11 @@ private:
     std::vector<DSToothElementSPtr> list;
 
     // contructors
-    DSToothElementList(const std::initializer_list<DSToothElementSPtr> il = {})
-        : list(il){};
+    DSToothElementList(
+        const std::initializer_list<DSToothElementSPtr> il = {}) {
+        auto append_item = [&](const auto& item) { this->append(item); };
+        std::for_each(il.begin(), il.end(), append_item);
+    };
 
 public:
     // append element
@@ -71,6 +79,13 @@ public:
     void remove(const std::string_view id) {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::remove_if(list.begin(), list.end(), find_id);
+        list.erase(it, list.end());
+    }
+
+    // remove element by unn
+    void remove_unn(const uint32_t unn) {
+        auto find_unn = [&](const auto& item) { return item->unn == unn; };
+        auto it = std::remove_if(list.begin(), list.end(), find_unn);
         list.erase(it, list.end());
     }
 
@@ -115,13 +130,16 @@ public:
 
 private:
     // contructors
-    DSModelElement(const std::string_view id)
-        : id(id), toothElementList(DSToothElementList::create()) {}
+    DSModelElement(const std::string_view                          id = "",
+                   const std::initializer_list<DSToothElementSPtr> il = {})
+        : id(id), toothElementList(DSToothElementList::create(il)) {}
 
 public:
     // static functions
-    static DSModelElementSPtr create(const std::string_view id = "") {
-        return std::make_shared<DSModelElement>(DSModelElement(id));
+    static DSModelElementSPtr
+    create(const std::string_view                          id = "",
+           const std::initializer_list<DSToothElementSPtr> il = {}) {
+        return std::make_shared<DSModelElement>(DSModelElement(id, il));
     }
 };
 
@@ -132,8 +150,11 @@ private:
     std::vector<DSModelElementSPtr> list;
 
     // contructors
-    DSModelElementList(const std::initializer_list<DSModelElementSPtr> il = {})
-        : list(il){};
+    DSModelElementList(
+        const std::initializer_list<DSModelElementSPtr> il = {}) {
+        auto append_item = [&](const auto& item) { this->append(item); };
+        std::for_each(il.begin(), il.end(), append_item);
+    };
 
 public:
     // append element
@@ -207,8 +228,10 @@ private:
     std::vector<DSScanElementSPtr> list;
 
     // contructors
-    DSScanElementList(const std::initializer_list<DSScanElementSPtr> il = {})
-        : list(il){};
+    DSScanElementList(const std::initializer_list<DSScanElementSPtr> il = {}) {
+        auto append_item = [&](const auto& item) { this->append(item); };
+        std::for_each(il.begin(), il.end(), append_item);
+    };
 
 public:
     // append element
@@ -272,14 +295,19 @@ public:
 
 private:
     // contructors
-    DSOrderElement(const std::string_view id = "")
-        : id(id), modelElementList(DSModelElementList::create()),
-          scanElementList(DSScanElementList::create()) {}
+    DSOrderElement(const std::string_view                          id = "",
+                   const std::initializer_list<DSModelElementSPtr> mil = {},
+                   const std::initializer_list<DSScanElementSPtr>  sil = {})
+        : id(id), modelElementList(DSModelElementList::create(mil)),
+          scanElementList(DSScanElementList::create(sil)){};
 
 public:
     // static functions
-    static DSOrderElementSPtr create(const std::string_view id = "") {
-        return std::make_shared<DSOrderElement>(DSOrderElement(id));
+    static DSOrderElementSPtr
+    create(const std::string_view                          id = "",
+           const std::initializer_list<DSModelElementSPtr> mil = {},
+           const std::initializer_list<DSScanElementSPtr>  sil = {}) {
+        return std::make_shared<DSOrderElement>(DSOrderElement(id, mil, sil));
     }
 };
 
@@ -290,8 +318,11 @@ private:
     std::vector<DSOrderElementSPtr> list;
 
     // contructors
-    DSOrderElementList(const std::initializer_list<DSOrderElementSPtr> il = {})
-        : list(il){};
+    DSOrderElementList(
+        const std::initializer_list<DSOrderElementSPtr> il = {}) {
+        auto append_item = [&](const auto& item) { this->append(item); };
+        std::for_each(il.begin(), il.end(), append_item);
+    };
 
 public:
     // append element

@@ -4,59 +4,58 @@
 #include <iostream>
 
 // PrintOrderDescription
-void PrintOrderDescription(DSOrderElementSPtr order) {
-    std::cout << order->id << std::endl;
-    // model elements
-    const DSModelElementList& models = *(order->modelElementList);
-    for (const auto& model: models.as_vector()) {
-        std::cout << "\t" << model->id << std::endl;
-        // tooth elements
-        const DSToothElementList& teeth = *(model->toothElementList);
-        for (const auto& tooth: teeth.as_vector())
-            std::cout << "\t\t" << tooth->id << std::endl;
+void PrintOrderDescription(DSOrderElementListSPtr orders) {
+    for (const auto& order: orders->as_vector()) {
+        std::cout << order->id << std::endl;
+        // model elements
+        for (const auto& model: order->modelElementList->as_vector()) {
+            std::cout << "\t" << model->id << std::endl;
+            // tooth elements
+            for (const auto& tooth: model->toothElementList->as_vector())
+                std::cout << "\t\t" << tooth->id << ", unn: " << tooth->unn
+                          << std::endl;
+        }
+        // scan elements
+        for (const auto& scan: order->scanElementList->as_vector())
+            std::cout << "\t" << scan->id << std::endl;
     }
-    // scan elements
-    const DSScanElementList& scans = *(order->scanElementList);
-    for (const auto& scan: scans.as_vector())
-        std::cout << "\t" << scan->id << std::endl;
 }
 
 int main(int argc, char** argv) {
-    // bsae types
-    DSOrderElementSPtr order;
-    DSScanElementSPtr  scan;
-    DSModelElementSPtr model;
-    DSToothElementSPtr tooth;
     // create order
-    order = DSOrderElement::create("OrderID_01");
-    // create scans
-    scan = DSScanElement::create("ScanID_01");
-    order->scanElementList->append(scan);
-    scan = DSScanElement::create("ScanID_02");
-    order->scanElementList->append(scan);
-    // create model elements
-    model = DSModelElement::create("ModelID_01");
-    order->modelElementList->append(model);
-    // create tooth elements
-    tooth = DSToothElement::create("ToothID_01");
-    model->toothElementList->append(tooth);
-    tooth = DSToothElement::create("ToothID_02");
-    model->toothElementList->append(tooth);
-    tooth = DSToothElement::create("ToothID_03");
-    model->toothElementList->append(tooth);
-    // create model elements
-    model = DSModelElement::create("ModelID_02");
-    order->modelElementList->append(model);
-    // create tooth elements
-    tooth = DSToothElement::create("ToothID_04");
-    model->toothElementList->append(tooth);
-    tooth = DSToothElement::create("ToothID_05");
-    model->toothElementList->append(tooth);
-    tooth = DSToothElement::create("ToothID_06");
-    model->toothElementList->append(tooth);
+    auto orders = DSOrderElementList::create({
+        DSOrderElement::create("OrderID_01", {
+            DSModelElement::create("ModelID_01", {
+                DSToothElement::create("ToothID_01", 4),
+                DSToothElement::create("ToothID_02", 5),
+                DSToothElement::create("ToothID_03", 6) 
+            }),
+            DSModelElement::create("ModelID_02", { 
+                DSToothElement::create("ToothID_04", 22),
+                DSToothElement::create("ToothID_05", 23),
+                DSToothElement::create("ToothID_06", 24)
+            })},{
+            DSScanElement::create("ScanID_01"),
+            DSScanElement::create("ScanID_02")
+        }),
+        DSOrderElement::create("OrderID_02", {
+            DSModelElement::create("ModelID_03", {
+                DSToothElement::create("ToothID_07", 4),
+                DSToothElement::create("ToothID_08", 5),
+                DSToothElement::create("ToothID_09", 6) 
+            }),
+            DSModelElement::create("ModelID_03", { 
+                DSToothElement::create("ToothID_10", 22),
+                DSToothElement::create("ToothID_11", 23),
+                DSToothElement::create("ToothID_11", 24)
+            })},{
+            DSScanElement::create("ScanID_01"),
+            DSScanElement::create("ScanID_02")
+        }),
+    });
 
     // print order description
-    PrintOrderDescription(order);
+    PrintOrderDescription(orders);
 
     return 0;
 }

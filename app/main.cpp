@@ -1,6 +1,4 @@
-#include "DSTypes/DSOrderTypes.hpp"
-#include <chrono>
-#include <filesystem>
+#include "DSTypes/DSOrderSerializerXml.hpp"
 #include <iostream>
 
 // PrintOrderDescription
@@ -54,6 +52,10 @@ int main(int argc, char** argv) {
         }),
     });
 
+    // write to xml file
+    DSOrderSerializerXml orderSerializerXml;
+    orderSerializerXml.write_to_file(orders, "./orders.xml");
+    
     // print order description
     PrintOrderDescription(orders);
 

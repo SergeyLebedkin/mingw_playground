@@ -67,6 +67,13 @@ public:
                 list.push_back(item);
     }
 
+    // append element list
+    void append_list(const DSElementList& lst) {
+        auto append_item = [&](const auto& item) { this->append(item); };
+        auto vec = lst.as_vector();
+        std::for_each(vec.cbegin(), vec.cend(), append_item);
+    }
+
     // remove element by id
     void remove(const std::string_view id) {
         auto find_id = [&](const auto& item) { return item->id == id; };
@@ -88,14 +95,14 @@ public:
         return it == list.end() ? nullptr : *it;
     }
 
+    // operator [id]
+    const auto operator[](const std::string_view id) const { return find(id); }
+
     // clear elements
     void clear() noexcept { list.clear(); }
 
     // size elements
     size_t size() const noexcept { return list.size(); }
-
-    // operator [id]
-    const auto operator[](const std::string_view id) const { return find(id); }
 
     // get as vector
     const auto& as_vector() const noexcept { return list; }
@@ -125,7 +132,7 @@ class DSToothElementList: public DSElementList<DSToothElementSPtr> {
 protected:
     // contructors
     DSToothElementList(const DSToothElementInitList il)
-        : DSElementList<DSToothElementSPtr>(il){};
+        : DSElementList<DSToothElementSPtr>(il) {}
 
 public:
     // remove element by unn
@@ -166,7 +173,7 @@ class DSModelElementList: public DSElementList<DSModelElementSPtr> {
 protected:
     // contructors
     DSModelElementList(const DSModelElementInitList il)
-        : DSElementList<DSModelElementSPtr>(il){};
+        : DSElementList<DSModelElementSPtr>(il) {}
 
 public:
     // create
@@ -197,7 +204,7 @@ class DSScanElementList: public DSElementList<DSScanElementSPtr> {
 protected:
     // contructors
     DSScanElementList(const DSScanElementInitList il)
-        : DSElementList<DSScanElementSPtr>(il){};
+        : DSElementList<DSScanElementSPtr>(il) {}
 
 public:
     // create
@@ -223,7 +230,7 @@ private:
     DSOrderElement(const std::string_view id, const DSModelElementInitList meil,
                    const DSScanElementInitList seil)
         : DSElement(id), modelElementList(DSModelElementList::create(meil)),
-          scanElementList(DSScanElementList::create(seil)){};
+          scanElementList(DSScanElementList::create(seil)) {}
 
 public:
     // static functions
@@ -239,7 +246,7 @@ class DSOrderElementList: public DSElementList<DSOrderElementSPtr> {
 protected:
     // contructors
     DSOrderElementList(const DSOrderElementInitList il)
-        : DSElementList<DSOrderElementSPtr>(il){};
+        : DSElementList<DSOrderElementSPtr>(il) {}
 
 public:
     // create

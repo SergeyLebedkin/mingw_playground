@@ -6,7 +6,7 @@
             "command": "time",
             "args": [
                 "make",
-                "-j8",
+                "-j4",
                 "-f",
                 "./build/mingw/Makefile"
             ],

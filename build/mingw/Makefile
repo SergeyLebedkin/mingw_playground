@@ -14,8 +14,8 @@ LIB_PATH = lib
 APP_CXX      = g++
 APP_CXXFLAGS = -g -Wall -std=c++17
 APP_ASMFLAGS = -masm=intel -Wall -std=c++17
-APP_DEFINES  =
-APP_INCLUDES = 
+APP_DEFINES  = -DPUGIXML_HEADER_ONLY
+APP_INCLUDES = -I ./deps/json/single_include -I ./deps/pugixml/src
 # app linking
 APP_LD        = g++
 APP_LDFLAGS   = -mconsole

@@ -82,7 +82,7 @@ public:
     }
 
     // find element by id
-    auto find(const std::string_view id) const {
+    DSElementSPtr find(const std::string_view id) const {
         auto find_id = [&](const auto& item) { return item->id == id; };
         auto it = std::find_if(list.begin(), list.end(), find_id);
         return it == list.end() ? nullptr : *it;
@@ -207,10 +207,9 @@ public:
 };
 
 // dental system order element
-class DSOrderElement {
+class DSOrderElement: public DSElement {
 public:
     // base properties
-    std::string id = "";
     std::string description = "";
     std::string firstName = "";
     std::string lastName = "";
@@ -223,7 +222,7 @@ private:
     // contructors
     DSOrderElement(const std::string_view id, const DSModelElementInitList meil,
                    const DSScanElementInitList seil)
-        : id(id), modelElementList(DSModelElementList::create(meil)),
+        : DSElement(id), modelElementList(DSModelElementList::create(meil)),
           scanElementList(DSScanElementList::create(seil)){};
 
 public:

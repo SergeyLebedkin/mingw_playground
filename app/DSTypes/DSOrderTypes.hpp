@@ -60,8 +60,7 @@ private:
     std::vector<DSToothElementSPtr> list;
 
     // contructors
-    DSToothElementList(
-        const std::initializer_list<DSToothElementSPtr> il = {}) {
+    DSToothElementList(const std::initializer_list<DSToothElementSPtr> il) {
         auto append_item = [&](const auto& item) { this->append(item); };
         std::for_each(il.begin(), il.end(), append_item);
     };
@@ -150,8 +149,7 @@ private:
     std::vector<DSModelElementSPtr> list;
 
     // contructors
-    DSModelElementList(
-        const std::initializer_list<DSModelElementSPtr> il = {}) {
+    DSModelElementList(const std::initializer_list<DSModelElementSPtr> il) {
         auto append_item = [&](const auto& item) { this->append(item); };
         std::for_each(il.begin(), il.end(), append_item);
     };
@@ -228,7 +226,7 @@ private:
     std::vector<DSScanElementSPtr> list;
 
     // contructors
-    DSScanElementList(const std::initializer_list<DSScanElementSPtr> il = {}) {
+    DSScanElementList(const std::initializer_list<DSScanElementSPtr> il) {
         auto append_item = [&](const auto& item) { this->append(item); };
         std::for_each(il.begin(), il.end(), append_item);
     };
@@ -318,8 +316,7 @@ private:
     std::vector<DSOrderElementSPtr> list;
 
     // contructors
-    DSOrderElementList(
-        const std::initializer_list<DSOrderElementSPtr> il = {}) {
+    DSOrderElementList(const std::initializer_list<DSOrderElementSPtr> il) {
         auto append_item = [&](const auto& item) { this->append(item); };
         std::for_each(il.begin(), il.end(), append_item);
     };

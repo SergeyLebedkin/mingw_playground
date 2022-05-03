@@ -43,9 +43,6 @@ private:
         : id(id), unn(unn) {}
 
 public:
-    virtual ~DSToothElement() {
-        std::cout << "DSToothElement dtor" << std::endl;
-    }
     // static functions
     static DSToothElementSPtr create(const std::string_view id = "",
                                      const uint32_t         unn = 0) {
@@ -278,7 +275,7 @@ public:
     }
 };
 
-// dental system order
+// dental system order element
 class DSOrderElement {
 public:
     // base properties
@@ -309,7 +306,7 @@ public:
     }
 };
 
-// dental system order list
+// dental system order element list
 class DSOrderElementList {
 private:
     // container

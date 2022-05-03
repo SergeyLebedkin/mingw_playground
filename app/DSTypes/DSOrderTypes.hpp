@@ -24,26 +24,96 @@ typedef std::shared_ptr<DSModelElement> DSModelElementSPtr;
 typedef std::shared_ptr<DSScanElement>  DSScanElementSPtr;
 typedef std::shared_ptr<DSOrderElement> DSOrderElementSPtr;
 
-// dental system types shared pointerlists  predefinitions
+// dental system types shared pointer lists predefinitions
 typedef std::shared_ptr<DSToothElementList> DSToothElementListSPtr;
 typedef std::shared_ptr<DSModelElementList> DSModelElementListSPtr;
 typedef std::shared_ptr<DSScanElementList>  DSScanElementListSPtr;
 typedef std::shared_ptr<DSOrderElementList> DSOrderElementListSPtr;
 
-// dental system tooth element
-class DSToothElement {
+// dental system initializer list
+typedef std::initializer_list<DSToothElementSPtr> DSToothElementInitList;
+typedef std::initializer_list<DSModelElementSPtr> DSModelElementInitList;
+typedef std::initializer_list<DSScanElementSPtr>  DSScanElementInitList;
+typedef std::initializer_list<DSOrderElementSPtr> DSOrderElementInitList;
+
+// base dental system element
+class DSElement {
 public:
-    // base properties
+    // properties
     std::string id = "";
-    uint32_t    unn = 0;
 
-private:
+protected:
+    DSElement(const std::string_view id) : id(id) {}
+};
+
+// base dental system element list template
+template <typename DSElementSPtr> class DSElementList {
+protected:
+    // container
+    std::vector<DSElementSPtr> list;
+
     // contructors
-    DSToothElement(const std::string_view id, const uint32_t unn)
-        : id(id), unn(unn) {}
+    DSElementList(const std::initializer_list<DSElementSPtr> il) {
+        auto append_item = [&](const auto& item) { this->append(item); };
+        std::for_each(il.begin(), il.end(), append_item);
+    };
 
 public:
-    // static functions
+    // append element
+    void append(const DSElementSPtr item) {
+        // check for nullptr
+        if (item)
+            if (!exists(item->id))
+                list.push_back(item);
+    }
+
+    // remove element by id
+    void remove(const std::string_view id) {
+        auto find_id = [&](const auto& item) { return item->id == id; };
+        auto it = std::remove_if(list.begin(), list.end(), find_id);
+        list.erase(it, list.end());
+    }
+
+    // check if element exists by id
+    bool exists(const std::string_view id) const {
+        auto find_id = [&](const auto& item) { return item->id == id; };
+        auto it = std::find_if(list.begin(), list.end(), find_id);
+        return it != list.end();
+    }
+
+    // find element by id
+    auto find(const std::string_view id) const {
+        auto find_id = [&](const auto& item) { return item->id == id; };
+        auto it = std::find_if(list.begin(), list.end(), find_id);
+        return it == list.end() ? nullptr : *it;
+    }
+
+    // clear elements
+    void clear() noexcept { list.clear(); }
+
+    // size elements
+    size_t size() const noexcept { return list.size(); }
+
+    // operator [id]
+    const auto operator[](const std::string_view id) const { return find(id); }
+
+    // get as vector
+    const auto& as_vector() const noexcept { return list; }
+};
+
+// dental system tooth element
+class DSToothElement: public DSElement {
+public:
+    // properties
+    uint32_t unn = 0;
+
+protected:
+    // contructor
+    DSToothElement(const std::string_view id, uint32_t unn)
+        : DSElement(id), unn(unn) {}
+
+public:
+    // create
     static DSToothElementSPtr create(const std::string_view id = "",
                                      const uint32_t         unn = 0) {
         return std::make_shared<DSToothElement>(DSToothElement(id, unn));
@@ -51,33 +121,13 @@ public:
 };
 
 // dental system tooth element list
-class DSToothElementList {
-private:
-    // container
-    std::vector<DSToothElementSPtr> list;
-
+class DSToothElementList: public DSElementList<DSToothElementSPtr> {
+protected:
     // contructors
-    DSToothElementList(const std::initializer_list<DSToothElementSPtr> il) {
-        auto append_item = [&](const auto& item) { this->append(item); };
-        std::for_each(il.begin(), il.end(), append_item);
-    };
+    DSToothElementList(const DSToothElementInitList il)
+        : DSElementList<DSToothElementSPtr>(il){};
 
 public:
-    // append element
-    void append(const DSToothElementSPtr item) {
-        // check for nullptr
-        if (item)
-            if (!exists(item->id))
-                list.push_back(item);
-    }
-
-    // remove element by id
-    void remove(const std::string_view id) {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::remove_if(list.begin(), list.end(), find_id);
-        list.erase(it, list.end());
-    }
-
     // remove element by unn
     void remove_unn(const uint32_t unn) {
         auto find_unn = [&](const auto& item) { return item->unn == unn; };
@@ -85,129 +135,55 @@ public:
         list.erase(it, list.end());
     }
 
-    // check if element exists by id
-    bool exists(const std::string_view id) const {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::find_if(list.begin(), list.end(), find_id);
-        return it != list.end();
-    }
-
-    // find element by id
-    auto find(const std::string_view id) const {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::find_if(list.begin(), list.end(), find_id);
-        return it == list.end() ? nullptr : *it;
-    }
-
-    // clear elements
-    void clear() noexcept { list.clear(); }
-
-    // operator [id]
-    const auto operator[](const std::string_view id) const { return find(id); }
-
-    // get as vector
-    const auto& as_vector() const noexcept { return list; }
-
 public:
     // create
-    static DSToothElementListSPtr
-    create(const std::initializer_list<DSToothElementSPtr> il = {}) {
+    static DSToothElementListSPtr create(const DSToothElementInitList il = {}) {
         return std::make_shared<DSToothElementList>(DSToothElementList(il));
     }
 };
 
 // dental system model element
-class DSModelElement {
+class DSModelElement: public DSElement {
 public:
-    // base properties
-    std::string id = "";
     // element list
     DSToothElementListSPtr toothElementList;
 
 private:
     // contructors
-    DSModelElement(const std::string_view                          id = "",
-                   const std::initializer_list<DSToothElementSPtr> il = {})
-        : id(id), toothElementList(DSToothElementList::create(il)) {}
+    DSModelElement(const std::string_view id, const DSToothElementInitList teil)
+        : DSElement(id), toothElementList(DSToothElementList::create(teil)) {}
 
 public:
     // static functions
-    static DSModelElementSPtr
-    create(const std::string_view                          id = "",
-           const std::initializer_list<DSToothElementSPtr> il = {}) {
-        return std::make_shared<DSModelElement>(DSModelElement(id, il));
+    static DSModelElementSPtr create(const std::string_view       id = "",
+                                     const DSToothElementInitList teil = {}) {
+        return std::make_shared<DSModelElement>(DSModelElement(id, teil));
     }
 };
 
 // dental system model element list
-class DSModelElementList {
-private:
-    // container
-    std::vector<DSModelElementSPtr> list;
-
+class DSModelElementList: public DSElementList<DSModelElementSPtr> {
+protected:
     // contructors
-    DSModelElementList(const std::initializer_list<DSModelElementSPtr> il) {
-        auto append_item = [&](const auto& item) { this->append(item); };
-        std::for_each(il.begin(), il.end(), append_item);
-    };
-
-public:
-    // append element
-    void append(const DSModelElementSPtr item) {
-        // check for nullptr
-        if (item)
-            if (!exists(item->id))
-                list.push_back(item);
-    }
-
-    // remove element by id
-    void remove(const std::string_view id) {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::remove_if(list.begin(), list.end(), find_id);
-        list.erase(it, list.end());
-    }
-
-    // check if element exists by id
-    bool exists(const std::string_view id) const {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::find_if(list.begin(), list.end(), find_id);
-        return it != list.end();
-    }
-
-    // find element by id
-    auto find(const std::string_view id) const {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::find_if(list.begin(), list.end(), find_id);
-        return it == list.end() ? nullptr : *it;
-    }
-
-    // clear elements
-    void clear() noexcept { list.clear(); }
-
-    // operator [id]
-    const auto operator[](const std::string_view id) const { return find(id); }
-
-    // get as vector
-    const auto& as_vector() const noexcept { return list; }
+    DSModelElementList(const DSModelElementInitList il)
+        : DSElementList<DSModelElementSPtr>(il){};
 
 public:
     // create
-    static DSModelElementListSPtr
-    create(const std::initializer_list<DSModelElementSPtr> il = {}) {
+    static DSModelElementListSPtr create(const DSModelElementInitList il = {}) {
         return std::make_shared<DSModelElementList>(DSModelElementList(il));
     }
 };
 
 // dental system scan element
-class DSScanElement {
+class DSScanElement: public DSElement {
 public:
     // base properties
-    std::string id = "";
     std::string fileName = "";
 
 private:
     // contructors
-    DSScanElement(const std::string_view id) : id(id) {}
+    DSScanElement(const std::string_view id) : DSElement(id) {}
 
 public:
     // static functions
@@ -217,60 +193,15 @@ public:
 };
 
 // dental system scan element list
-class DSScanElementList {
-private:
-    // container
-    std::vector<DSScanElementSPtr> list;
-
+class DSScanElementList: public DSElementList<DSScanElementSPtr> {
+protected:
     // contructors
-    DSScanElementList(const std::initializer_list<DSScanElementSPtr> il) {
-        auto append_item = [&](const auto& item) { this->append(item); };
-        std::for_each(il.begin(), il.end(), append_item);
-    };
-
-public:
-    // append element
-    void append(const DSScanElementSPtr item) {
-        // check for nullptr
-        if (item)
-            if (!exists(item->id))
-                list.push_back(item);
-    }
-
-    // remove element by id
-    void remove(const std::string_view id) {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::remove_if(list.begin(), list.end(), find_id);
-        list.erase(it, list.end());
-    }
-
-    // check if element exists by id
-    bool exists(const std::string_view id) const {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::find_if(list.begin(), list.end(), find_id);
-        return it != list.end();
-    }
-
-    // find element by id
-    auto find(const std::string_view id) const {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::find_if(list.begin(), list.end(), find_id);
-        return it == list.end() ? nullptr : *it;
-    }
-
-    // clear elements
-    void clear() noexcept { list.clear(); }
-
-    // operator [id]
-    const auto operator[](const std::string_view id) const { return find(id); }
-
-    // get as vector
-    const auto& as_vector() const noexcept { return list; }
+    DSScanElementList(const DSScanElementInitList il)
+        : DSElementList<DSScanElementSPtr>(il){};
 
 public:
     // create
-    static DSScanElementListSPtr
-    create(const std::initializer_list<DSScanElementSPtr> il = {}) {
+    static DSScanElementListSPtr create(const DSScanElementInitList il = {}) {
         return std::make_shared<DSScanElementList>(DSScanElementList(il));
     }
 };
@@ -290,77 +221,30 @@ public:
 
 private:
     // contructors
-    DSOrderElement(const std::string_view                          id = "",
-                   const std::initializer_list<DSModelElementSPtr> mil = {},
-                   const std::initializer_list<DSScanElementSPtr>  sil = {})
-        : id(id), modelElementList(DSModelElementList::create(mil)),
-          scanElementList(DSScanElementList::create(sil)){};
+    DSOrderElement(const std::string_view id, const DSModelElementInitList meil,
+                   const DSScanElementInitList seil)
+        : id(id), modelElementList(DSModelElementList::create(meil)),
+          scanElementList(DSScanElementList::create(seil)){};
 
 public:
     // static functions
-    static DSOrderElementSPtr
-    create(const std::string_view                          id = "",
-           const std::initializer_list<DSModelElementSPtr> mil = {},
-           const std::initializer_list<DSScanElementSPtr>  sil = {}) {
-        return std::make_shared<DSOrderElement>(DSOrderElement(id, mil, sil));
+    static DSOrderElementSPtr create(const std::string_view       id = "",
+                                     const DSModelElementInitList meil = {},
+                                     const DSScanElementInitList  seil = {}) {
+        return std::make_shared<DSOrderElement>(DSOrderElement(id, meil, seil));
     }
 };
 
 // dental system order element list
-class DSOrderElementList {
-private:
-    // container
-    std::vector<DSOrderElementSPtr> list;
-
+class DSOrderElementList: public DSElementList<DSOrderElementSPtr> {
+protected:
     // contructors
-    DSOrderElementList(const std::initializer_list<DSOrderElementSPtr> il) {
-        auto append_item = [&](const auto& item) { this->append(item); };
-        std::for_each(il.begin(), il.end(), append_item);
-    };
-
-public:
-    // append element
-    void append(const DSOrderElementSPtr item) {
-        // check for nullptr
-        if (item)
-            if (!exists(item->id))
-                list.push_back(item);
-    }
-
-    // remove element by id
-    void remove(const std::string_view id) {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::remove_if(list.begin(), list.end(), find_id);
-        list.erase(it, list.end());
-    }
-
-    // check if element exists by id
-    bool exists(const std::string_view id) const {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::find_if(list.begin(), list.end(), find_id);
-        return it != list.end();
-    }
-
-    // find element by id
-    auto find(const std::string_view id) const {
-        auto find_id = [&](const auto& item) { return item->id == id; };
-        auto it = std::find_if(list.begin(), list.end(), find_id);
-        return it == list.end() ? nullptr : *it;
-    }
-
-    // clear elements
-    void clear() noexcept { list.clear(); }
-
-    // operator [id]
-    const auto operator[](const std::string_view id) const { return find(id); }
-
-    // get as vector
-    const auto& as_vector() const noexcept { return list; }
+    DSOrderElementList(const DSOrderElementInitList il)
+        : DSElementList<DSOrderElementSPtr>(il){};
 
 public:
     // create
-    static DSOrderElementListSPtr
-    create(const std::initializer_list<DSOrderElementSPtr> il = {}) {
+    static DSOrderElementListSPtr create(const DSOrderElementInitList il = {}) {
         return std::make_shared<DSOrderElementList>(DSOrderElementList(il));
     }
 };

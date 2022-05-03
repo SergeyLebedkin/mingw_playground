@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
             DSModelElement::create("ModelID_03", {
                 DSToothElement::create("ToothID_07", 4),
                 DSToothElement::create("ToothID_08", 5),
-                DSToothElement::create("ToothID_09", 6) 
+                DSToothElement::create("ToothID_09", 6)
             }),
             DSModelElement::create("ModelID_03", { 
                 DSToothElement::create("ToothID_10", 22),

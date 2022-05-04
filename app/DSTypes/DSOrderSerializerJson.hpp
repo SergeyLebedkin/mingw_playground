@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DSOrderSerializer.hpp"
+#include <nlohmann/json.hpp>
 
 // dental system order serializer interface
 class DSOrderSerializerJson: public DSOrderSerializer {

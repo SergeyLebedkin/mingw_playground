@@ -44,10 +44,8 @@ bool DSOrderSerializerXml::write_to_file(const DSOrderElementListSPtr list,
                                          const std::filesystem::path  path) {
     // create xml document
     pugi::xml_document doc;
-
     // write to xml node
     write_to_xml_node(list, doc);
-    
     // save to file
     return doc.save_file(path.c_str());
 }

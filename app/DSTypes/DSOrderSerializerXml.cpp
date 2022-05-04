@@ -1,16 +1,11 @@
 #include "DSOrderSerializerXml.hpp"
-
 #include <fstream>
-#include <pugixml.hpp>
 
-// serialize order list to file
-void DSOrderSerializerXml::write_to_file(const DSOrderElementListSPtr list,
-                                         const std::filesystem::path  path) {
-    // create xml document
-    pugi::xml_document doc;
-
+// write to xml node
+void DSOrderSerializerXml::write_to_xml_node(const DSOrderElementListSPtr list,
+                                             pugi::xml_node node) {
     // create order element list node
-    auto orderListNode = doc.append_child("OrderElementList");
+    auto orderListNode = node.append_child("OrderElementList");
     for (const auto& order: list->as_vector()) {
         // create order element node
         auto orderNode = orderListNode.append_child("OrderElement");
@@ -29,7 +24,7 @@ void DSOrderSerializerXml::write_to_file(const DSOrderElementListSPtr list,
             for (const auto& tooth: model->toothElementList->as_vector()) {
                 // create tooth element node
                 auto toothNode = toothListNode.append_child("ToothElement");
-                toothNode.append_child("ID"). text() = tooth->id.c_str();
+                toothNode.append_child("ID").text() = tooth->id.c_str();
                 toothNode.append_child("Unn").text() = tooth->unn;
             }
         }
@@ -42,7 +37,17 @@ void DSOrderSerializerXml::write_to_file(const DSOrderElementListSPtr list,
             scanNode.append_child("FileName").text() = scan->fileName.c_str();
         }
     }
+}
 
+// serialize order list to file
+bool DSOrderSerializerXml::write_to_file(const DSOrderElementListSPtr list,
+                                         const std::filesystem::path  path) {
+    // create xml document
+    pugi::xml_document doc;
+
+    // write to xml node
+    write_to_xml_node(list, doc);
+    
     // save to file
-    doc.save_file(path.c_str());
+    return doc.save_file(path.c_str());
 }
